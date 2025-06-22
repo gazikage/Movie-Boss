@@ -1,7 +1,6 @@
 import { useState , useEffect} from 'react'
 import { useDebounce } from 'react-use'
 import { Client } from "appwrite";
-import './App.css'
 import Search from './components/search';
 import Spinner from './components/spinner';
 import MovieCard from './components/MovieCard';
