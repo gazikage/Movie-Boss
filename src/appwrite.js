@@ -1,0 +1,3 @@
+const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
+const PROJECT_ID = import.meta.env.VITE_APPWRITE__PROJECT_ID;
+const COLLECTION_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
