@@ -4,7 +4,7 @@ import {Client}  from "appwrite";
 import Search from './components/search';
 import Spinner from './components/spinner';
 import MovieCard from './components/MovieCard';
-import { updateSearchCount } from './appwrite';
+import { updateSearchCount, updateTrendingMovies } from './appwrite';
 
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -24,6 +24,7 @@ const [dataBox, setDataBox]= useState('');
 const [errorMessage, setErrorMessage] = useState([]);
 const [isLoading, setIsLoading] = useState(false);
 const [debounceTerm, setDebounceTerm ] = useState('')
+const  [trendingMovies, setTrendingMovies] = useState([])
 
 
 useDebounce(() => setDebounceTerm(searchTerm), 1000, [searchTerm])
@@ -64,9 +65,22 @@ catch (error) {
     setIsLoading(false)
   }
 }
+const loadTrendingMovies = async () => {
+  try {
+    const movies = await updateTrendingMovies();
+    setTrendingMovies(movies)
+  } catch (error) {
+    console.error(`Fetching trending movies unsuccessful due to: ${error}`);
+    
+  }
+}
 
 useEffect(()=>{fetchMovies(debounceTerm);}, 
 [debounceTerm])
+
+useEffect(() => {
+  loadTrendingMovies();
+},[])
 
   return (
     <main>
@@ -79,8 +93,24 @@ useEffect(()=>{fetchMovies(debounceTerm);},
          
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
            </header>
-           <section className="all-movies">
-           <h2 className='mt-[40px]'>All Movies</h2>
+
+
+            {trendingMovies.length > 0 && ( 
+              <section className="trending">
+              <h2>Trending Movies</h2>
+              <ul>
+                {trendingMovies.map((movie, index) => (
+                  <li key={movie.$id}>
+                    <p>{index + 1}</p>
+                    <img src={movie.poster_url} alt={movie.title} />
+                    <h3>{movie.title}</h3>
+                  </li>
+                ))}
+              </ul>
+            </section> )}
+
+          <section className="all-movies">
+           <h2>All Movies</h2>
 
            {isLoading ? (
             <Spinner/>)

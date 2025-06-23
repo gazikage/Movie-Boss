@@ -33,3 +33,16 @@ await database.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), {searchTe
     console.log(error);
 }
 }
+
+export const updateTrendingMovies = async () => { 
+    try {
+      const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
+        Query.limit(5, true), Query.orderDesc('count'),
+      ]);
+   return result.documents;
+   
+    } catch (error) {
+        console.log(error);
+        
+    }
+} 
