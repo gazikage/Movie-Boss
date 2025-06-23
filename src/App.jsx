@@ -1,9 +1,10 @@
 import { useState , useEffect} from 'react'
 import { useDebounce } from 'react-use'
-import { Client } from "appwrite";
+import {Client}  from "appwrite";
 import Search from './components/search';
 import Spinner from './components/spinner';
 import MovieCard from './components/MovieCard';
+import { updateSearchCount } from './appwrite';
 
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -22,10 +23,10 @@ const [searchTerm , setSearchTerm] = useState("");
 const [dataBox, setDataBox]= useState('');
 const [errorMessage, setErrorMessage] = useState([]);
 const [isLoading, setIsLoading] = useState(false);
-const [debounceTerm, useDebounceTerm ] = useState('')
+const [debounceTerm, setDebounceTerm ] = useState('')
 
 
-useDebounce(() => useDebounceTerm(searchTerm), 750, [searchTerm])
+useDebounce(() => setDebounceTerm(searchTerm), 1000, [searchTerm])
 
 
 const fetchMovies = async ( query ='') => {
@@ -48,7 +49,10 @@ const fetchMovies = async ( query ='') => {
         return
       }
       setDataBox(data.results)
-    
+ 
+      if(query && data.results.length > 0){
+        await updateSearchCount(query, data.results[0]);
+      }
       
  
   } 
